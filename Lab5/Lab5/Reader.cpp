@@ -15,7 +15,7 @@ string Reader::getPostfix(string s)
 		{
 			int k = 0;
 			
-			while ((isalpha(s[i + k])) || (isdigit(s[i + k])))
+			while ((isalpha(s[i + k])) || (isdigit(s[i + k])) || (s[i + k] == '.' ))
 				k++;
 			//cout << k;
 			//system("pause");
@@ -29,7 +29,7 @@ string Reader::getPostfix(string s)
 				{
 					while (*(stack.end() - 1) != '(')
 					{
-						result = result + *(stack.end() - 1);
+						result = string(1, *(stack.end() - 1)) + " " + result;
 						stack.pop_back();
 					}
 					stack.pop_back();
@@ -38,7 +38,7 @@ string Reader::getPostfix(string s)
 				{
 					if ((*(stack.end() - 1) == '/') || (*(stack.end() - 1) == '^')|| (*(stack.end() - 1) == '*'))
 					{
-						result = result + *(stack.end() - 1);
+						result = string(1, *(stack.end() - 1)) + " " + result;
 						stack.pop_back();
 						stack.push_back(operation);
 					}
@@ -50,7 +50,7 @@ string Reader::getPostfix(string s)
 			}
 			else
 			{
-				result = result + s.substr(i, k);
+				result = s.substr(i, k) + " " + result;
 			}
 			i = k + i - 1;
 		}
@@ -58,7 +58,8 @@ string Reader::getPostfix(string s)
 	}
 	for (int i = stack.size() - 1; i >= 0; i--)
 	{
-		result = result + stack[i];
+		string l = string(1, stack[i]);
+		result = l + " " + result;
 	}
 	return result;
 }
