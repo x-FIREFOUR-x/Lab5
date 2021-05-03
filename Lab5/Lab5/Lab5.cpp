@@ -12,9 +12,14 @@ int main()
     string s;
     getline(cin, s);
     Reader reader;
-    cout << reader.getPostfix(s);
+    //cout << reader.getPostfix(s);
+    tree.push_operator(reader.getPostfix(s));
+    getline(cin, s);
+    tree.push_operator(reader.getPostfix(s));
+    getline(cin, s);
     tree.push_operator(reader.getPostfix(s));
     tree.print_tree();
+    tree.calculate(var);
     return 0;
 }
 

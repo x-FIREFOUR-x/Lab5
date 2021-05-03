@@ -45,14 +45,14 @@ void Tree::TLR(string str, int& index, Node*& node)
 
 void Tree::print_tree()
 {
-	cout << RTL(root->ptr[0], 0) << endl;
+	//cout << RTL(root->ptr[0], 0) << endl;
 	for (int i = 0; i < root->ptr.size(); i++)
 	{
 		LTR(root->ptr[i], 0);	// викликаєм функцію симетричного обходу починаючи з кореня
 		cout << endl;
 	}
-	
 }
+
 void Tree::LTR(Node* node, int level)
 {
 	if (node != nullptr)
@@ -70,28 +70,52 @@ void Tree::LTR(Node* node, int level)
 	
 }
 
-double Tree::RTL(Node* node, int level)
+void Tree::calculate(map<string, double>&var)
+{
+	for (int i = 0; i < root->ptr.size(); i++)
+	{
+		if (root->ptr[i]->date == "=")
+			RTL(root->ptr[i], 0, var);
+		else
+			cout << RTL(root->ptr[i], 0, var);
+	}
+}
+
+
+double Tree::RTL(Node* node, int level, map<string, double>&var)
 {
 	if (node != nullptr)
 	{
 		if (node->ptr[0] == nullptr)
 		{
-			return stod(node->date);
+			if (isdigit(node->date[0]))
+				return stod(node->date);
+			else
+			{
+				//cout << "!" << var[node->date] << "!" << endl;
+				return var[node->date];
+			}
 		}
-		double sum, right, left;
-		right = RTL(node->ptr[1], level + 1);
+		double sum = 0, right, left;
+		right = RTL(node->ptr[1], level + 1, var);
 		if (node->date == "+")
-			sum = right + RTL(node->ptr[0], level + 1);
+			sum = right + RTL(node->ptr[0], level + 1,var);
 		if (node->date == "-")
-			sum = right - RTL(node->ptr[0], level + 1);
+			sum = right - RTL(node->ptr[0], level + 1, var);
 		if (node->date == "*")
-			sum = right * RTL(node->ptr[0], level + 1);
+			sum = right * RTL(node->ptr[0], level + 1, var);
 		if (node->date == "/")
-			sum = right / RTL(node->ptr[0], level + 1);
+			sum = right / RTL(node->ptr[0], level + 1, var);
 		if (node->date == "^")
-			sum = pow(right, RTL(node->ptr[0], level + 1));
+			sum = pow(right, RTL(node->ptr[0], level + 1, var));
+		if (node->date == "=")
+		{
+			//cout << "!!!!";
+			var[node->ptr[1]->date] = RTL(node->ptr[0], level + 1, var);
+			//var.insert(make_pair(node->ptr[1]->date, RTL(node->ptr[0], level + 1, var)));
+			//cout << var[node->ptr[1]->date] << endl;
+		}
 		return sum;
 		//RTL(node->ptr[0], level + 1);
 	}
-
 }
