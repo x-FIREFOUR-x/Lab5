@@ -7,19 +7,15 @@ using namespace std;
 
 int main()
 {
-    map<string, double> var;
-    Tree tree;
+    string file;
+    getline(cin, file);
+    Reader scan;
+    Tree tree = scan.read_code(file);
+    tree.print_tree();
     string s;
     getline(cin, s);
     Reader reader;
-    //cout << reader.getPostfix(s);
-    tree.push_operator(reader.getPostfix(s));
-    getline(cin, s);
-    tree.push_operator(reader.getPostfix(s));
-    getline(cin, s);
-    tree.push_operator(reader.getPostfix(s));
-    tree.print_tree();
-    tree.calculate(var);
+    cout << reader.getPostfix(s);
     return 0;
 }
 

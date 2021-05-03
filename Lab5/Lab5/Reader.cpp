@@ -1,6 +1,7 @@
 #include "Reader.h"
 #include <vector>
 #include <iostream>
+#include <fstream>
 
 string Reader::getPostfix(string s)
 {
@@ -107,4 +108,30 @@ string Reader::getPostfix(string s)
 		result = l + " " + result;
 	}
 	return result;
+}
+
+Tree Reader::read_code(string name_file)
+{
+	ifstream fin;
+	fin.open(name_file);
+	vector<string> code;
+
+	string str;
+	while (!fin.eof())
+	{
+		getline(fin, str);
+		code.push_back(str);
+	}
+	
+	Tree tree;
+	for (int i = 0; i < code.size(); i++)
+	{
+		if (code[i].find(';') == code[i].length() - 1)
+		{
+			str = code[i].substr(0, code[i].length() - 1);
+			str = getPostfix(str);
+			tree.push_operator(str);
+		}
+	}
+	return tree;
 }
