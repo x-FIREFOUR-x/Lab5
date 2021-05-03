@@ -74,10 +74,14 @@ void Tree::calculate(map<string, double>&var)
 {
 	for (int i = 0; i < root->ptr.size(); i++)
 	{
-		if (root->ptr[i]->date == "=")
-			RTL(root->ptr[i], 0, var);
-		else
-			cout << RTL(root->ptr[i], 0, var);
+		if (root->ptr[i] != nullptr)
+		{
+			if (root->ptr[i]->date == "=")
+				RTL(root->ptr[i], 0, var);
+			else
+				cout << RTL(root->ptr[i], 0, var);
+		}
+		
 	}
 }
 
