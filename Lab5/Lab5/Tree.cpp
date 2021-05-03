@@ -79,7 +79,7 @@ void Tree::calculate(map<string, double>&var)
 			if (root->ptr[i]->date == "=")
 				RTL(root->ptr[i], 0, var);
 			else
-				cout << RTL(root->ptr[i], 0, var);
+				cout << RTL(root->ptr[i], 0, var) << endl;
 		}
 		
 	}

@@ -24,20 +24,18 @@ string Reader::getPostfix(string s)
 			{
 				k++;
 				operation = s[i];
-				if ((operation == '+') || (operation == '-') || (operation == '=') || (operation == '('))
+				if (operation == '(')
+					stack.push_back(operation);
+				if ((operation == '+') || (operation == '-') || (operation == '='))
 				{
 					if (!stack.empty())
 					{
-						if ((*(stack.end() - 1) == '/') || (*(stack.end() - 1) == '*') || (*(stack.end() - 1) == '^'))
+						while((*(stack.end() - 1) == '/') || (*(stack.end() - 1) == '*') || (*(stack.end() - 1) == '^')|| (*(stack.end() - 1) == '+') || (*(stack.end() - 1) == '-'))
 						{
 							result = string(1, *(stack.end() - 1)) + " " + result;
 							stack.pop_back();
-							stack.push_back(operation);
 						}
-						else
-						{
-							stack.push_back(operation);
-						}
+						stack.push_back(operation);
 					}
 					else
 					{
@@ -57,16 +55,7 @@ string Reader::getPostfix(string s)
 				{
 					if (!stack.empty())
 					{
-						if (*(stack.end() - 1) == '^')
-						{
-							result = string(1, *(stack.end() - 1)) + " " + result;
-							stack.pop_back();
-							stack.push_back(operation);
-						}
-						else
-						{
-							stack.push_back(operation);
-						}
+						stack.push_back(operation);
 					}
 					else
 						{
@@ -77,16 +66,13 @@ string Reader::getPostfix(string s)
 				{
 					if (!stack.empty())
 					{
-						if ((*(stack.end() - 1) == '/') || (*(stack.end() - 1) == '*')|| (*(stack.end() - 1) == '^'))
+						while ((*(stack.end() - 1) == '/') || (*(stack.end() - 1) == '*') || (*(stack.end() - 1) == '^'))
 						{
 							result = string(1, *(stack.end() - 1)) + " " + result;
 							stack.pop_back();
-							stack.push_back(operation);
+							
 						}
-						else
-						{
-							stack.push_back(operation);
-						}
+						stack.push_back(operation);
 					}
 					else
 					{
