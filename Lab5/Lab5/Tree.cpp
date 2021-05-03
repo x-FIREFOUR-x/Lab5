@@ -13,7 +13,7 @@ void Tree::push_operator(string str)
 
 	TLR(str, index, root->ptr[number]);		
 }
-void Tree::TLR(string str, int index, Node*& node)
+void Tree::TLR(string str, int& index, Node*& node)
 {
 	if (index < str.length())		// перевіряєм чи потрібно створювати нащадків
 	{
@@ -32,13 +32,6 @@ void Tree::TLR(string str, int index, Node*& node)
 			node->ptr.push_back(nullptr);
 			TLR(str, index, node->ptr[0]);
 
-			int in_last = str.find(" ", index);				// обчислюєм значення індекса на елемент вперед який був відкочений зарахунок рекурсії
-			if (str.npos == in_last)
-			{
-				in_last = str.length();
-			}
-			index = in_last + 1;
-
 			node->ptr.push_back(nullptr);
 			TLR(str, index, node->ptr[1]);
 		}
@@ -52,8 +45,12 @@ void Tree::TLR(string str, int index, Node*& node)
 
 void Tree::print_tree()
 {
-	for (int i = 0 ; i < root->ptr[0]->ptr.size(); i++)
-	LTR(root->ptr[i], 0);	// викликаєм функцію симетричного обходу починаючи з кореня
+	for (int i = 0; i < root->ptr.size(); i++)
+	{
+		LTR(root->ptr[i], 0);	// викликаєм функцію симетричного обходу починаючи з кореня
+		cout << endl;
+	}
+	
 }
 void Tree::LTR(Node* node, int level)
 {

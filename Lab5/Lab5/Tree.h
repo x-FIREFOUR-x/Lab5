@@ -11,7 +11,7 @@ struct Node
 class Tree
 {
 	Node* root;
-	void TLR(string, int, Node*& );
+	void TLR(string, int&, Node*& );
 	void LTR(Node* node, int level);
 
 public:
