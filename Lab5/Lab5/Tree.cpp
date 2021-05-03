@@ -45,6 +45,7 @@ void Tree::TLR(string str, int& index, Node*& node)
 
 void Tree::print_tree()
 {
+	cout << RTL(root->ptr[0], 0) << endl;
 	for (int i = 0; i < root->ptr.size(); i++)
 	{
 		LTR(root->ptr[i], 0);	// викликаєм функцію симетричного обходу починаючи з кореня
@@ -67,4 +68,30 @@ void Tree::LTR(Node* node, int level)
 		LTR(node->ptr[1], level + 1);	// викликаєм цю функцію для правого нащадка 
 	}
 	
+}
+
+double Tree::RTL(Node* node, int level)
+{
+	if (node != nullptr)
+	{
+		if (node->ptr[0] == nullptr)
+		{
+			return stod(node->date);
+		}
+		double sum, right, left;
+		right = RTL(node->ptr[1], level + 1);
+		if (node->date == "+")
+			sum = right + RTL(node->ptr[0], level + 1);
+		if (node->date == "-")
+			sum = right - RTL(node->ptr[0], level + 1);
+		if (node->date == "*")
+			sum = right * RTL(node->ptr[0], level + 1);
+		if (node->date == "/")
+			sum = right / RTL(node->ptr[0], level + 1);
+		if (node->date == "^")
+			sum = pow(right, RTL(node->ptr[0], level + 1));
+		return sum;
+		//RTL(node->ptr[0], level + 1);
+	}
+
 }

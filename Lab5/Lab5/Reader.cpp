@@ -24,7 +24,25 @@ string Reader::getPostfix(string s)
 				k++;
 				operation = s[i];
 				if ((operation == '+') || (operation == '-') || (operation == '=') || (operation == '('))
-					stack.push_back(operation);
+				{
+					if (!stack.empty())
+					{
+						if ((*(stack.end() - 1) == '/') || (*(stack.end() - 1) == '*') || (*(stack.end() - 1) == '^'))
+						{
+							result = string(1, *(stack.end() - 1)) + " " + result;
+							stack.pop_back();
+							stack.push_back(operation);
+						}
+						else
+						{
+							stack.push_back(operation);
+						}
+					}
+					else
+					{
+						stack.push_back(operation);
+					}
+				}
 				if (operation == ')')
 				{
 					while (*(stack.end() - 1) != '(')
@@ -34,13 +52,40 @@ string Reader::getPostfix(string s)
 					}
 					stack.pop_back();
 				}
-				if ((operation == '*') || (operation == '/') || (operation == '^'))
+				if (operation == '^')
 				{
-					if ((*(stack.end() - 1) == '/') || (*(stack.end() - 1) == '^')|| (*(stack.end() - 1) == '*'))
+					if (!stack.empty())
 					{
-						result = string(1, *(stack.end() - 1)) + " " + result;
-						stack.pop_back();
-						stack.push_back(operation);
+						if (*(stack.end() - 1) == '^')
+						{
+							result = string(1, *(stack.end() - 1)) + " " + result;
+							stack.pop_back();
+							stack.push_back(operation);
+						}
+						else
+						{
+							stack.push_back(operation);
+						}
+					}
+					else
+						{
+							stack.push_back(operation);
+						}
+				}
+				if ((operation == '*') || (operation == '/'))
+				{
+					if (!stack.empty())
+					{
+						if ((*(stack.end() - 1) == '/') || (*(stack.end() - 1) == '*')|| (*(stack.end() - 1) == '^'))
+						{
+							result = string(1, *(stack.end() - 1)) + " " + result;
+							stack.pop_back();
+							stack.push_back(operation);
+						}
+						else
+						{
+							stack.push_back(operation);
+						}
 					}
 					else
 					{
