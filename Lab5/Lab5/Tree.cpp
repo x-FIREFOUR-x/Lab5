@@ -42,10 +42,15 @@ void Tree::TLR(string str, int index, Node*& node)
 			node->ptr.push_back(nullptr);
 			TLR(str, index, node->ptr[1]);
 		}
+		else
+		{
+			node->ptr.push_back(nullptr);
+			node->ptr.push_back(nullptr);
+		}
 	}
 }
 
-/*void Tree::print_tree()
+void Tree::print_tree()
 {
 	for (int i = 0 ; i < root->ptr[0]->ptr.size(); i++)
 	LTR(root->ptr[i], 0);	// викликаєм функцію симетричного обходу починаючи з кореня
@@ -54,10 +59,7 @@ void Tree::LTR(Node* node, int level)
 {
 	if (node != nullptr)
 	{
-		if (node->ptr.size() > 0)
-			LTR(node->ptr[0], level + 1);	// викликаєм цю функцію для лівого нащадка
-		else
-			LTR(nullptr, level + 1)
+		LTR(node->ptr[0], level + 1);	// викликаєм цю функцію для лівого нащадка
 
 		for (int i = 0; i < level; i++)		// обробка вузла (виведення з врахуванням відповідного рівня)
 		{
@@ -65,12 +67,7 @@ void Tree::LTR(Node* node, int level)
 		}
 		cout << node->date << endl;			// виведення значення вузла
 
-		//if (node->ptr.size() > 1)
 		LTR(node->ptr[1], level + 1);	// викликаєм цю функцію для правого нащадка 
 	}
 	
-	/*cout << root->ptr[0]->ptr[0]->date << endl;
-	cout << root->ptr[0]->ptr[1]->date << endl;
-	cout << root->ptr[0]->date << endl;
-	
-}*/
+}

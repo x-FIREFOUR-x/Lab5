@@ -12,11 +12,11 @@ class Tree
 {
 	Node* root;
 	void TLR(string, int, Node*& );
-	//void LTR(Node* node, int level);
+	void LTR(Node* node, int level);
 
 public:
 	Tree();
 	void push_operator(string);
-	//void print_tree();
+	void print_tree();
 };
 
