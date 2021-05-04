@@ -15,7 +15,7 @@ int main()
     Tree tree = scan.read_code(file);
     tree.print_tree();
 
-    tree.calculate(var);
+    //tree.calculate(var);
     ////string s;
     return 0;
 }

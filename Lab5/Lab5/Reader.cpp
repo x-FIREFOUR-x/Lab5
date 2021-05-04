@@ -151,7 +151,7 @@ Tree Reader::read_code(string name_file)
 	}
 	code.push_back("");
 	Tree tree;
-	for (int i = 0; i < code.size() - 1; i++)
+	for (int i = 0; i < code.size() - 2; i++)
 	{
 		if (code[i].find(';') == code[i].length() - 1)
 		{
@@ -166,13 +166,16 @@ Tree Reader::read_code(string name_file)
 				if (code[i + 1] == "else")
 				{
 					str = code[i] + code[i + 1];
-					i = i + 1;
+					 i = i + 1;
 				}
 			}
 			else
+			{
 				str = code[i];
-			str = getPostfix(str);
-			tree.push_operator(str);
+				str = getPostfix(str);
+			}
+			if (str!="")
+				tree.push_operator(str);
 		}
 	}
 	return tree;

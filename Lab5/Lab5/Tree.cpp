@@ -38,7 +38,6 @@ void Tree::push_operator(string str)
 			else
 			{
 				subRoot.pop_back();
-				cout << subRoot.back() -> date;
 			}
 		}
 	}
@@ -71,10 +70,10 @@ void Tree::pushIf(Node* root1, string str)
 	TLR(str, index, node->ptr[0]);
 	Node* list2 = new Node;
 	list2->date = "List2";
-	node->ptr[1] = list2;
+	node->ptr[2] = list2;
 	Node* list1 = new Node;
 	list1->date = "List1";
-	node->ptr[2] = list1;
+	node->ptr[1] = list1;
 	subRoot.push_back(list2);
 	subRoot.push_back(list1);
 }
@@ -111,7 +110,6 @@ void Tree::TLR(string str, int& index, Node*& node)
 
 void Tree::print_tree()
 {
-	//cout << RTL(root->ptr[0], 0) << endl;
 	for (int i = 0; i < root->ptr.size(); i++)
 	{
 		LTR(root->ptr[i], 0);	// викликаєм функцію симетричного обходу починаючи з кореня
@@ -123,15 +121,15 @@ void Tree::LTR(Node* node, int level)
 {
 	if (node != nullptr)
 	{
-		LTR(node->ptr[0], level + 1);	// викликаєм цю функцію для лівого нащадка
-
+		if (!node->ptr.empty())
+			LTR(node->ptr[0], level + 1);	// викликаєм цю функцію для лівого нащадка
 		for (int i = 0; i < level; i++)		// обробка вузла (виведення з врахуванням відповідного рівня)
 		{
 			cout << "\t";
 		}
 		cout << node->date << endl;			// виведення значення вузла
 		for(int i = 1; i < node->ptr.size(); i++)
-			LTR(node->ptr[1], level + 1);	// викликаєм цю функцію для правого нащадка 
+			LTR(node->ptr[i], level + 1);	// викликаєм цю функцію для правого нащадка 
 	}
 	
 }
