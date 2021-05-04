@@ -17,6 +17,14 @@ string Reader::getPostfix(string s)
 	}
 	while (i < s.length())
 	{	
+		if (s.find("}") != s.npos)
+		{
+			return "}";
+		}
+		if (s.find("else ") != s.npos)
+		{
+			return "else";
+		}
 		string operation;
 		if (s[i] != ' ')
 		{
@@ -141,13 +149,28 @@ Tree Reader::read_code(string name_file)
 		getline(fin, str);
 		code.push_back(str);
 	}
-	
+	code.push_back("");
 	Tree tree;
-	for (int i = 0; i < code.size(); i++)
+	for (int i = 0; i < code.size() - 1; i++)
 	{
 		if (code[i].find(';') == code[i].length() - 1)
 		{
 			str = code[i].substr(0, code[i].length() - 1);
+			str = getPostfix(str);
+			tree.push_operator(str);
+		}
+		else
+		{
+			if (code[i] == "}")
+			{
+				if (code[i + 1] == "else")
+				{
+					str = code[i] + code[i + 1];
+					i = i + 1;
+				}
+			}
+			else
+				str = code[i];
 			str = getPostfix(str);
 			tree.push_operator(str);
 		}

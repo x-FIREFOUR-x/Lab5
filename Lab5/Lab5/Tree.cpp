@@ -4,15 +4,81 @@ Tree::Tree()
 	Node* node = new Node;				// створюєм корінь 
 	root = node;
 	root->date = "Statement list";
+	subRoot.push_back(root);
 }
 void Tree::push_operator(string str)
+{
+	if (str.substr(0, 3) != "if ")
+	{
+		if (str[0] != '}')
+		{
+			int index = 0;							// індекс початку підрядка в рядку str (підрядок це елемент який потрібно поміщати в вузол) 
+			subRoot.back()->ptr.push_back(nullptr);			// створюєм вказіник на нового нащадка
+			int number = subRoot.back()->ptr.size() - 1;		// взнаєм індекс вказівника на нового нащадка
+
+			TLR(str, index, subRoot.back()->ptr[number]);
+		}
+		else
+		{
+			
+			if (str.find("else") == str.npos)
+			{
+				
+				if (subRoot.back()->date == "List1")
+				{
+					
+					subRoot.pop_back();
+					subRoot.pop_back();
+				}
+				else
+				{
+					subRoot.pop_back();
+				}
+			}
+			else
+			{
+				subRoot.pop_back();
+				cout << subRoot.back() -> date;
+			}
+		}
+	}
+	else
+	{
+		pushIf(subRoot.back(), str);
+	}
+}
+
+void Tree::push_operator(Node* root, string str)
 {
 	int index = 0;							// індекс початку підрядка в рядку str (підрядок це елемент який потрібно поміщати в вузол) 
 	root->ptr.push_back(nullptr);			// створюєм вказіник на нового нащадка
 	int number = root->ptr.size() - 1;		// взнаєм індекс вказівника на нового нащадка
-
-	TLR(str, index, root->ptr[number]);		
+	TLR(str, index, root->ptr[number]);
 }
+
+void Tree::pushIf(Node* root1, string str)
+{
+	int index = 0;							// індекс початку підрядка в рядку str (підрядок це елемент який потрібно поміщати в вузол) 
+	root1->ptr.push_back(nullptr);			// створюєм вказіник на нового нащадка
+	int number = root1->ptr.size() - 1;		// взнаєм індекс вказівника на нового нащадка
+	Node* node = new Node;
+	node->date = "if";
+	root1->ptr[number] = node;
+	node->ptr.push_back(nullptr);
+	node->ptr.push_back(nullptr);
+	node->ptr.push_back(nullptr);
+	index = 3;
+	TLR(str, index, node->ptr[0]);
+	Node* list2 = new Node;
+	list2->date = "List2";
+	node->ptr[1] = list2;
+	Node* list1 = new Node;
+	list1->date = "List1";
+	node->ptr[2] = list1;
+	subRoot.push_back(list2);
+	subRoot.push_back(list1);
+}
+
 void Tree::TLR(string str, int& index, Node*& node)
 {
 	if (index < str.length())		// перевіряєм чи потрібно створювати нащадків
@@ -64,8 +130,8 @@ void Tree::LTR(Node* node, int level)
 			cout << "\t";
 		}
 		cout << node->date << endl;			// виведення значення вузла
-
-		LTR(node->ptr[1], level + 1);	// викликаєм цю функцію для правого нащадка 
+		for(int i = 1; i < node->ptr.size(); i++)
+			LTR(node->ptr[1], level + 1);	// викликаєм цю функцію для правого нащадка 
 	}
 	
 }
