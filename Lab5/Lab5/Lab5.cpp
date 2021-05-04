@@ -9,14 +9,17 @@ int main()
 {
     map <string, double> var;
     string file;
+    cout << "Input path file code: ";
     getline(cin, file);
 
     Reader scan;
     Tree tree = scan.read_code(file);
+    cout << "Tree AST: " << endl;
     tree.print_tree();
 
+    cout << endl << "Results: " << endl;
     tree.calculate(var);
-    ////string s;
+    
     return 0;
 }
 

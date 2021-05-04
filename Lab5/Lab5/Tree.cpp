@@ -150,7 +150,7 @@ void Tree::calculate(map<string, double>&var)
 					choose(root->ptr[i], var);
 				}
 				else
-					cout << RTL(root->ptr[i], 0, var) << endl;
+					cout << "result: " << RTL(root->ptr[i], 0, var) << endl;
 			}
 				
 		}
