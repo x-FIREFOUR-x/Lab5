@@ -24,6 +24,7 @@ public:
 	void push_operator(Node*, string);
 	void calculate(map<string, double>&);
 	void calculate(Node*, map<string, double>&);
+	void choose(Node*, map<string, double>&);
 	void print_tree();
 };
 

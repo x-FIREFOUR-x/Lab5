@@ -115,6 +115,7 @@ void Tree::print_tree()
 		LTR(root->ptr[i], 0);	// викликаєм функцію симетричного обходу починаючи з кореня
 		cout << endl;
 	}
+	//cout << root[]
 }
 
 void Tree::LTR(Node* node, int level)
@@ -146,7 +147,7 @@ void Tree::calculate(map<string, double>&var)
 			{
 				if (root->ptr[i]->date == "if")
 				{
-					calculate(root->ptr[i], var);
+					choose(root->ptr[i], var);
 				}
 				else
 					cout << RTL(root->ptr[i], 0, var) << endl;
@@ -169,15 +170,23 @@ void Tree::calculate(Node*root, map<string, double>& var)
 			{
 				if (root->ptr[i]->date == "if")
 				{
-					calculate(root->ptr[i], var);
+					choose(root->ptr[i], var);
 				}
 				else
-					cout << RTL(root->ptr[i], 0, var) << endl;
+					cout << "result:" << RTL(root->ptr[i], 0, var) << endl;
 			}
 
 		}
 
 	}
+}
+
+void Tree::choose(Node*root, map<string, double>& var)
+{
+	if (RTL(root->ptr[0], 0, var))
+		calculate(root->ptr[1], var);
+	else
+		calculate(root->ptr[2], var);
 }
 
 
@@ -206,17 +215,35 @@ double Tree::RTL(Node* node, int level, map<string, double>&var)
 			sum = right / RTL(node->ptr[0], level + 1, var);
 		if (node->date == "^")
 			sum = pow(right, RTL(node->ptr[0], level + 1, var));
+		if (node->date == ">")
+			if (right > RTL(node->ptr[0], level + 1, var))
+				sum = 1;
+		if (node->date == "<")
+			if (right < RTL(node->ptr[0], level + 1, var))
+				sum = 1;
+		if (node->date == ">=")
+			if (right >= RTL(node->ptr[0], level + 1, var))
+				sum = 1;
+		if (node->date == "<=")
+			if (right <= RTL(node->ptr[0], level + 1, var))
+				sum = 1;
+		if (node->date == "==")
+			if (right == RTL(node->ptr[0], level + 1, var))
+				sum = 1;
+		if (node->date == "!=")
+			if (right != RTL(node->ptr[0], level + 1, var))
+				sum = 1;
+		if (node->date == "&&")
+			if (right && RTL(node->ptr[0], level + 1, var))
+				sum = 1;
+		if (node->date == "||")
+			if (right || RTL(node->ptr[0], level + 1, var))
+				sum = 1;
 		if (node->date == "=")
 		{
 			var[node->ptr[1]->date] = RTL(node->ptr[0], level + 1, var);
 		}
-		if (node->date == "if")
-		{
-			if (RTL(node->ptr[2], level + 1, var))
-				sum = RTL(node->ptr[1], level + 1, var);
-			else
-				sum = RTL(node->ptr[0], level + 1, var);
-		}
+		
 		return sum;
 	}
 }
