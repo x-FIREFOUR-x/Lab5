@@ -20,6 +20,7 @@ public:
 	Tree();
 	void push_operator(string);
 	void calculate(map<string, double>&);
+	void calculate(Node*, map<string, double>&);
 	void print_tree();
 };
 
