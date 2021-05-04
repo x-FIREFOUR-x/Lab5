@@ -4,15 +4,80 @@ Tree::Tree()
 	Node* node = new Node;				// створюєм корінь 
 	root = node;
 	root->date = "Statement list";
+	subRoot.push_back(root);
 }
 void Tree::push_operator(string str)
+{
+	if (str.substr(0, 3) != "if ")
+	{
+		if (str[0] != '}')
+		{
+			int index = 0;							// індекс початку підрядка в рядку str (підрядок це елемент який потрібно поміщати в вузол) 
+			subRoot.back()->ptr.push_back(nullptr);			// створюєм вказіник на нового нащадка
+			int number = subRoot.back()->ptr.size() - 1;		// взнаєм індекс вказівника на нового нащадка
+
+			TLR(str, index, subRoot.back()->ptr[number]);
+		}
+		else
+		{
+			
+			if (str.find("else") == str.npos)
+			{
+				
+				if (subRoot.back()->date == "List1")
+				{
+					
+					subRoot.pop_back();
+					subRoot.pop_back();
+				}
+				else
+				{
+					subRoot.pop_back();
+				}
+			}
+			else
+			{
+				subRoot.pop_back();
+			}
+		}
+	}
+	else
+	{
+		pushIf(subRoot.back(), str);
+	}
+}
+
+void Tree::push_operator(Node* root, string str)
 {
 	int index = 0;							// індекс початку підрядка в рядку str (підрядок це елемент який потрібно поміщати в вузол) 
 	root->ptr.push_back(nullptr);			// створюєм вказіник на нового нащадка
 	int number = root->ptr.size() - 1;		// взнаєм індекс вказівника на нового нащадка
-
-	TLR(str, index, root->ptr[number]);		
+	TLR(str, index, root->ptr[number]);
 }
+
+void Tree::pushIf(Node* root1, string str)
+{
+	int index = 0;							// індекс початку підрядка в рядку str (підрядок це елемент який потрібно поміщати в вузол) 
+	root1->ptr.push_back(nullptr);			// створюєм вказіник на нового нащадка
+	int number = root1->ptr.size() - 1;		// взнаєм індекс вказівника на нового нащадка
+	Node* node = new Node;
+	node->date = "if";
+	root1->ptr[number] = node;
+	node->ptr.push_back(nullptr);
+	node->ptr.push_back(nullptr);
+	node->ptr.push_back(nullptr);
+	index = 3;
+	TLR(str, index, node->ptr[0]);
+	Node* list2 = new Node;
+	list2->date = "List2";
+	node->ptr[2] = list2;
+	Node* list1 = new Node;
+	list1->date = "List1";
+	node->ptr[1] = list1;
+	subRoot.push_back(list2);
+	subRoot.push_back(list1);
+}
+
 void Tree::TLR(string str, int& index, Node*& node)
 {
 	if (index < str.length())		// перевіряєм чи потрібно створювати нащадків
@@ -45,7 +110,6 @@ void Tree::TLR(string str, int& index, Node*& node)
 
 void Tree::print_tree()
 {
-	//cout << RTL(root->ptr[0], 0) << endl;
 	for (int i = 0; i < root->ptr.size(); i++)
 	{
 		LTR(root->ptr[i], 0);	// викликаєм функцію симетричного обходу починаючи з кореня
@@ -57,15 +121,15 @@ void Tree::LTR(Node* node, int level)
 {
 	if (node != nullptr)
 	{
-		LTR(node->ptr[0], level + 1);	// викликаєм цю функцію для лівого нащадка
-
+		if (!node->ptr.empty())
+			LTR(node->ptr[0], level + 1);	// викликаєм цю функцію для лівого нащадка
 		for (int i = 0; i < level; i++)		// обробка вузла (виведення з врахуванням відповідного рівня)
 		{
 			cout << "\t";
 		}
 		cout << node->date << endl;			// виведення значення вузла
-
-		LTR(node->ptr[1], level + 1);	// викликаєм цю функцію для правого нащадка 
+		for(int i = 1; i < node->ptr.size(); i++)
+			LTR(node->ptr[i], level + 1);	// викликаєм цю функцію для правого нащадка 
 	}
 	
 }
@@ -79,9 +143,40 @@ void Tree::calculate(map<string, double>&var)
 			if (root->ptr[i]->date == "=")
 				RTL(root->ptr[i], 0, var);
 			else
-				cout << RTL(root->ptr[i], 0, var) << endl;
+			{
+				if (root->ptr[i]->date == "if")
+				{
+					calculate(root->ptr[i], var);
+				}
+				else
+					cout << RTL(root->ptr[i], 0, var) << endl;
+			}
+				
 		}
 		
+	}
+}
+
+void Tree::calculate(Node*root, map<string, double>& var)
+{
+	for (int i = 0; i < root->ptr.size(); i++)
+	{
+		if (root->ptr[i] != nullptr)
+		{
+			if (root->ptr[i]->date == "=")
+				RTL(root->ptr[i], 0, var);
+			else
+			{
+				if (root->ptr[i]->date == "if")
+				{
+					calculate(root->ptr[i], var);
+				}
+				else
+					cout << RTL(root->ptr[i], 0, var) << endl;
+			}
+
+		}
+
 	}
 }
 
@@ -96,7 +191,6 @@ double Tree::RTL(Node* node, int level, map<string, double>&var)
 				return stod(node->date);
 			else
 			{
-				//cout << "!" << var[node->date] << "!" << endl;
 				return var[node->date];
 			}
 		}
@@ -114,12 +208,15 @@ double Tree::RTL(Node* node, int level, map<string, double>&var)
 			sum = pow(right, RTL(node->ptr[0], level + 1, var));
 		if (node->date == "=")
 		{
-			//cout << "!!!!";
 			var[node->ptr[1]->date] = RTL(node->ptr[0], level + 1, var);
-			//var.insert(make_pair(node->ptr[1]->date, RTL(node->ptr[0], level + 1, var)));
-			//cout << var[node->ptr[1]->date] << endl;
+		}
+		if (node->date == "if")
+		{
+			if (RTL(node->ptr[2], level + 1, var))
+				sum = RTL(node->ptr[1], level + 1, var);
+			else
+				sum = RTL(node->ptr[0], level + 1, var);
 		}
 		return sum;
-		//RTL(node->ptr[0], level + 1);
 	}
 }

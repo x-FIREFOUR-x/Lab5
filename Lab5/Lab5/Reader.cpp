@@ -6,78 +6,118 @@
 string Reader::getPostfix(string s)
 {
 	string result = "";
-	vector<char> stack;
+	vector<string> stack;
 	int i = 0;
-	while (i < s.length())
+	bool fl = false;
+	int pos = s.find("if ");
+	if (pos != s.npos)
 	{
-		
-		char operation;
+		fl = true;
+		i = pos + 3;
+	}
+	while (i < s.length())
+	{	
+		if (s.find("}") != s.npos)
+		{
+			return "}";
+		}
+		if (s.find("else ") != s.npos)
+		{
+			return "else";
+		}
+		string operation;
 		if (s[i] != ' ')
 		{
 			int k = 0;
 			
 			while ((isalpha(s[i + k])) || (isdigit(s[i + k])) || (s[i + k] == '.' ))
 				k++;
-			//cout << k;
-			//system("pause");
 			if (k == 0)
 			{
 				k++;
 				operation = s[i];
-				if (operation == '(')
-					stack.push_back(operation);
-				if ((operation == '+') || (operation == '-') || (operation == '='))
+				if ((s[i]!=')') && (s[i]!='(') && !isalpha(s[i + k]) && !isdigit(s[i + k]) && (s[i + k] != ' ') && (s[i + k] != ')') && (s[i + k] != '('))
 				{
-					if (!stack.empty())
-					{
-						while((*(stack.end() - 1) == '/') || (*(stack.end() - 1) == '*') || (*(stack.end() - 1) == '^')|| (*(stack.end() - 1) == '+') || (*(stack.end() - 1) == '-'))
-						{
-							result = string(1, *(stack.end() - 1)) + " " + result;
-							stack.pop_back();
-						}
-						stack.push_back(operation);
-					}
-					else
-					{
-						stack.push_back(operation);
-					}
+					operation = operation + string(1, s[i + 1]);
+					k++;
 				}
-				if (operation == ')')
+				if (operation == "(")
+					stack.push_back(operation);
+				if ((operation == "==") || (operation == "!="))
 				{
-					while (*(stack.end() - 1) != '(')
+					while (!stack.empty() && ((*(stack.end() - 1) == "/") || (*(stack.end() - 1) == "*") || (*(stack.end() - 1) == "^") || (*(stack.end() - 1) == "+") || (*(stack.end() - 1) == "-") || (*(stack.end() - 1) == "<=") || (*(stack.end() - 1) == "<") || (*(stack.end() - 1) == ">=") || (*(stack.end() - 1) == ">")))
 					{
-						result = string(1, *(stack.end() - 1)) + " " + result;
+						result = *(stack.end() - 1) + " " + result;
+						stack.pop_back();
+					}
+					stack.push_back(operation);
+				}
+				if ((operation == ">") || (operation == ">=") || (operation == "<=") || (operation == "<"))
+				{
+					while (!stack.empty() && ((*(stack.end() - 1) == "/") || (*(stack.end() - 1) == "*") || (*(stack.end() - 1) == "^") || (*(stack.end() - 1) == "+") || (*(stack.end() - 1) == "-")))
+					{
+						result = *(stack.end() - 1) + " " + result;
+						stack.pop_back();
+					}
+					stack.push_back(operation);
+				}
+
+				if (operation == "&&")
+				{
+					while (!stack.empty()&&((*(stack.end() - 1) == "/") || (*(stack.end() - 1) == "*") || (*(stack.end() - 1) == "^") || (*(stack.end() - 1) == "+") || (*(stack.end() - 1) == "-") || (*(stack.end() - 1) == "==") || (*(stack.end() - 1) == "!=") || (*(stack.end() - 1) == "<=") || (*(stack.end() - 1) == "<") || (*(stack.end() - 1) == ">=") || (*(stack.end() - 1) == ">")))
+					{
+						result = *(stack.end() - 1) + " " + result;
+						stack.pop_back();
+					}
+					stack.push_back(operation);
+				}
+				if (operation == "||")
+				{
+					while (!stack.empty() && ((*(stack.end() - 1) == "/") || (*(stack.end() - 1) == "*") || (*(stack.end() - 1) == "^") || (*(stack.end() - 1) == "+") || (*(stack.end() - 1) == "-") || (*(stack.end() - 1) == "==") || (*(stack.end() - 1) == "!=") || (*(stack.end() - 1) == "<=") || (*(stack.end() - 1) == "<") || (*(stack.end() - 1) == ">=") || (*(stack.end() - 1) == ">") || (*(stack.end() - 1) == "&&")))
+					{
+						result = *(stack.end() - 1) + " " + result;
+						stack.pop_back();
+					}
+					stack.push_back(operation);
+				}
+				if ((operation == "+") || (operation == "-") || (operation == "="))
+				{				
+					while(!stack.empty()&&((*(stack.end() - 1) == "/") || (*(stack.end() - 1) == "*") || (*(stack.end() - 1) == "^")|| (*(stack.end() - 1) == "+") || (*(stack.end() - 1) == "-")))
+					{
+						result = *(stack.end() - 1) + " " + result;
+						stack.pop_back();
+					}
+					stack.push_back(operation);
+				}
+				if (operation == ")")
+				{
+					while (*(stack.end() - 1) != "(")
+					{
+						result = *(stack.end() - 1) + " " + result;
 						stack.pop_back();
 					}
 					stack.pop_back();
 				}
-				if (operation == '^')
+				if (operation == "^")
 				{
 					if (!stack.empty())
 					{
 						stack.push_back(operation);
 					}
 					else
-						{
-							stack.push_back(operation);
-						}
+					{
+						stack.push_back(operation);
+					}
 				}
-				if ((operation == '*') || (operation == '/'))
+				if ((operation == "*") || (operation == "/"))
 				{
-					if (!stack.empty())
+					while (!stack.empty()&&((*(stack.end() - 1) == "/") || (*(stack.end() - 1) == "*") || (*(stack.end() - 1) == "^")))
 					{
-						while ((*(stack.end() - 1) == '/') || (*(stack.end() - 1) == '*') || (*(stack.end() - 1) == '^'))
-						{
-							result = string(1, *(stack.end() - 1)) + " " + result;
-							stack.pop_back();
+						result = *(stack.end() - 1) + " " + result;
+						stack.pop_back();
 							
-						}
-						stack.push_back(operation);
 					}
-					else
-					{
-						stack.push_back(operation);
-					}
+					stack.push_back(operation);
 				}
 			}
 			else
@@ -90,9 +130,10 @@ string Reader::getPostfix(string s)
 	}
 	for (int i = stack.size() - 1; i >= 0; i--)
 	{
-		string l = string(1, stack[i]);
-		result = l + " " + result;
+		result = stack[i] + " " + result;
 	}
+	if (fl)
+		result = "if " + result;
 	return result;
 }
 
@@ -108,15 +149,33 @@ Tree Reader::read_code(string name_file)
 		getline(fin, str);
 		code.push_back(str);
 	}
-	
+	code.push_back("");
 	Tree tree;
-	for (int i = 0; i < code.size(); i++)
+	for (int i = 0; i < code.size() - 2; i++)
 	{
 		if (code[i].find(';') == code[i].length() - 1)
 		{
 			str = code[i].substr(0, code[i].length() - 1);
 			str = getPostfix(str);
 			tree.push_operator(str);
+		}
+		else
+		{
+			if (code[i] == "}")
+			{
+				if (code[i + 1] == "else")
+				{
+					str = code[i] + code[i + 1];
+					 i = i + 1;
+				}
+			}
+			else
+			{
+				str = code[i];
+				str = getPostfix(str);
+			}
+			if (str!="")
+				tree.push_operator(str);
 		}
 	}
 	return tree;
