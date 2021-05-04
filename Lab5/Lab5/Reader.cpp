@@ -151,7 +151,7 @@ Tree Reader::read_code(string name_file)
 	}
 	code.push_back("");
 	Tree tree;
-	for (int i = 0; i < code.size() - 2; i++)
+	for (int i = 0; i < code.size() - 1; i++)
 	{
 		if (code[i].find(';') == code[i].length() - 1)
 		{
@@ -161,12 +161,16 @@ Tree Reader::read_code(string name_file)
 		}
 		else
 		{
-			if (code[i] == "}")
+			if (code[i].find("}") != code[i].npos)
 			{
-				if (code[i + 1] == "else")
+				if (code[i + 1].find("else") != code[i].npos)
 				{
-					str = code[i] + code[i + 1];
+					str = "}else";
 					 i = i + 1;
+				}
+				else
+				{
+					str = "}";
 				}
 			}
 			else
