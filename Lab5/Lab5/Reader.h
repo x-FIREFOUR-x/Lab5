@@ -8,6 +8,7 @@ class Reader
 {
 public:
 	string getPostfix(string);
+	string ternarProccess(string);
 	Tree read_code(string);
 };
 

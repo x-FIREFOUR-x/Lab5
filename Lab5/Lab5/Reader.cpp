@@ -155,9 +155,51 @@ Tree Reader::read_code(string name_file)
 	{
 		if (code[i].find(';') == code[i].length() - 1)
 		{
-			str = code[i].substr(0, code[i].length() - 1);
-			str = getPostfix(str);
-			tree.push_operator(str);
+			if (code[i].find("?") != code[i].npos)
+			{
+				int j = 0;
+				string res;
+				string condition;
+				string first, second;
+				while (code[i][j] == ' ' || code[i][j] == '\t')
+					j++;
+				int pos = j;
+				j++;
+				while (code[i][j] != '?' && code[i][j] != '=')
+					j++;
+				//cout << "1";
+				if (code[i][j] == '=')
+				{
+					res = code[i].substr(pos, j - pos + 1);
+					pos = j + 1;
+				}
+				
+				while (code[i][j] != '?')
+					j++;
+				
+				condition = code[i].substr(pos, j - pos);
+				pos = j + 1;
+				int next = code[i].find(" : ", pos);
+				first = code[i].substr(pos, next - pos);
+				pos = next + 2;
+				second = code[i].substr(pos, code[i].length() - 1 - pos);
+				//cout << condition << " " << res + first << " " << res + second << endl;
+				condition = "if " + condition;
+				str = getPostfix(condition);
+				tree.push_operator(str);
+				str = getPostfix(res + first);
+				tree.push_operator(str);
+				tree.push_operator("}else");
+				str = getPostfix(res + second);
+				tree.push_operator(str);
+				tree.push_operator("}");
+			}
+			else
+			{
+				str = code[i].substr(0, code[i].length() - 1);
+				str = getPostfix(str);
+				tree.push_operator(str);
+			}
 		}
 		else
 		{
